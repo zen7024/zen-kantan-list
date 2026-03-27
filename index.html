@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="お母さんのための簡単買い物リスト">
+    <meta name="theme-color" content="#4CAF50">
+    <title>かんたんリスト v2.2</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <h1>🛒 かんたんリスト</h1>
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="shopping">買い物</button>
+            <button class="tab-btn" data-tab="favorites">お気に入り</button>
+            <button class="tab-btn" data-tab="history">履歴</button>
+            <button class="tab-btn" data-tab="settings">⚙️ 設定</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main>
+
+        <!-- 買い物タブ -->
+        <div id="shopping-tab" class="tab-content active">
+
+            <!-- 🌅 本日買うもの バナー -->
+            <div id="todayBanner" class="today-banner" style="display:none;">
+                <div class="today-banner-header">
+                    <span class="today-banner-title">🌅 本日買うもの</span>
+                    <span id="todayCount" class="today-count"></span>
+                </div>
+                <div id="todayItemsList" class="today-items-list"></div>
+            </div>
+
+            <!-- 入力エリア -->
+            <div class="input-area">
+                <input
+                    id="itemInput"
+                    type="text"
+                    placeholder="買うものを入力"
+                    aria-label="買い物リストに追加する商品名"
+                >
+                <select id="categorySelect" class="category-select">
+                    <!-- JSで動的に生成 -->
+                </select>
+                <button id="addBtn" class="btn-primary">➕ 追加</button>
+            </div>
+
+            <!-- 📅 日付入力エリア -->
+            <div class="date-input-area">
+                <label for="scheduledDateInput" class="date-label">📅 いつ買う予定？（任意）</label>
+                <input
+                    type="date"
+                    id="scheduledDateInput"
+                    class="date-input"
+                >
+            </div>
+
+            <!-- フィルターボタン -->
+            <div id="filterButtons" class="filter-buttons">
+                <!-- JSで動的に生成 -->
+            </div>
+
+            <!-- リスト -->
+            <div class="list-container">
+                <div id="emptyList" class="empty-message">
+                    <p>📝 買うものを追加してください</p>
+                </div>
+                <ul id="shoppingList" class="shopping-list">
+                    <!-- JSで動的に生成 -->
+                </ul>
+            </div>
+
+            <!-- 完了カウント -->
+            <div class="stats">
+                <p id="completedCount">✅ 買った: 0個</p>
+            </div>
+        </div>
+
+        <!-- お気に入りタブ -->
+        <div id="favorites-tab" class="tab-content">
+            <div class="favorites-container">
+                <div id="emptyFavorites" class="empty-message">
+                    <p>⭐ よく買うものを登録してください</p>
+                </div>
+                <ul id="favoritesList" class="favorites-list">
+                    <!-- JSで動的に生成 -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- 履歴タブ -->
+        <div id="history-tab" class="tab-content">
+            <div class="history-controls">
+                <button id="clearHistoryBtn" class="btn-secondary">
+                    🗑️ 履歴を消去
+                </button>
+            </div>
+            <div class="history-container">
+                <div id="emptyHistory" class="empty-message">
+                    <p>📋 買い物履歴がありません</p>
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- JSで動的に生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 設定タブ -->
+        <div id="settings-tab" class="tab-content">
+            <h2 class="settings-title">⚙️ カテゴリ設定</h2>
+            <p class="settings-description">お店の名前を自由に追加・削除できます</p>
+            <div class="category-form">
+                <input type="text" id="categoryNameInput" class="category-input" placeholder="お店の名前（例：ドラッグストア）">
+                <input type="text" id="categoryEmojiInput" class="category-icon-input" placeholder="絵文字（例：💊）">
+                <button id="addCategoryBtn" class="btn-primary">➕ 追加</button>
+            </div>
+            <div class="categories-list">
+                <h3>現在のカテゴリ</h3>
+                <ul id="categoriesList" class="settings-categories-list">
+                    <!-- JSで動的に生成 -->
+                </ul>
+            </div>
+            <button id="resetCategoriesBtn" class="btn-secondary" style="margin-top:20px;">🔄 デフォルトに戻す</button>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>お母さんのための買い物リスト ❤️</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
