@@ -18,17 +18,7 @@ const DEFAULT_CATEGORIES = [
     { icon: '📦', name: 'その他' }
 ];
 
-// ---------- LocalStorage ----------
-function loadData() {
-    shoppingItems = JSON.parse(localStorage.getItem('shoppingItems') || '[]');
-    categories    = JSON.parse(localStorage.getItem('categories')    || 'null') || [...DEFAULT_CATEGORIES];
-    favorites     = JSON.parse(localStorage.getItem('favorites')     || '[]');
-    history       = JSON.parse(localStorage.getItem('history')       || '[]');
-}
 
-function save(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
-}
 
 // ---------- 日付ユーティリティ ----------
 function getTodayString() {
@@ -357,7 +347,11 @@ function showToast(message) {
 
 // ---------- 初期化 ----------
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
+    const loaded = loadData(DEFAULT_CATEGORIES);
+    shoppingItems = loaded.shoppingItems;
+    categories = loaded.categories;
+    favorites = loaded.favorites;
+    history = loaded.history;
 
     // タブ切替
     document.querySelectorAll('.tab-btn').forEach(btn => {
