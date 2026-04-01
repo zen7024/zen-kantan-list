@@ -27,3 +27,4 @@ https://genuine-pudding-4b8619.netlify.app/
 - 倉庫・物流業界 20年以上
 - 現場目線のシステム開発が強み
 - Python / AI 学習中
+- SourceTreeで最初のクローン確認を実施
