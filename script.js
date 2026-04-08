@@ -96,7 +96,8 @@ function renderCategories() {
     ).join('');
 
     catList.querySelectorAll('.btn-delete-category').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', () => {   
+            backupBeforeWrite();
             categories.splice(parseInt(btn.dataset.index), 1);
             save('categories', categories);
             renderCategories();
@@ -161,6 +162,7 @@ function renderShoppingList() {
         cb.addEventListener('change', () => {
             const item = shoppingItems.find(i => i.id === parseInt(cb.dataset.id));
             if (item) {
+                backupBeforeWrite();
                 item.completed = cb.checked;
                 if (cb.checked) addToHistory(item);
                 save('shoppingItems', shoppingItems);
@@ -173,6 +175,7 @@ function renderShoppingList() {
     // 削除
     list.querySelectorAll('.btn-delete-item').forEach(btn => {
         btn.addEventListener('click', () => {
+            backupBeforeWrite();
             shoppingItems = shoppingItems.filter(i => i.id !== parseInt(btn.dataset.id));
             save('shoppingItems', shoppingItems);
             renderShoppingList();
@@ -221,7 +224,8 @@ function addItem() {
         createdAt: new Date().toISOString(),
         scheduledDate: dateEl.value || null   // 新フィールド：予定日
     };
-
+    
+    backupBeforeWrite();
     shoppingItems.push(newItem);
     save('shoppingItems', shoppingItems);
 
