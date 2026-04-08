@@ -135,6 +135,69 @@
     </footer>
     <script src="js/storage.js"></script>
     <script src="js/backup.js"></script>
+    <script src="js/inventoryStorage.js"></script>
     <script src="script.js"></script>
+
+    <section id="inventorySection" class="inventory-section">
+        <div class="inventory-header">
+          <h2 class="inventory-title">在庫管理（最小版）</h2>
+          <div class="inventory-toolbar">
+            <label class="inventory-check">
+              <input type="checkbox" id="inventoryLowStockOnly">
+              低在庫のみ表示
+            </label>
+            <button type="button" id="inventoryRefreshBtn" class="inventory-secondary-btn">再読み込み</button>
+          </div>
+        </div>
+      
+        <form id="inventoryForm" class="inventory-form">
+          <div class="inventory-grid">
+            <label>
+              品名
+              <input type="text" id="inventoryName" required placeholder="例: 牛乳">
+            </label>
+      
+            <label>
+              数量
+              <input type="number" id="inventoryQuantity" min="0" step="1" value="1" required>
+            </label>
+      
+            <label>
+              単位
+              <input type="text" id="inventoryUnit" value="個" placeholder="例: 本">
+            </label>
+      
+            <label>
+              カテゴリ
+              <input type="text" id="inventoryCategory" placeholder="例: 冷蔵">
+            </label>
+      
+            <label>
+              保管場所
+              <input type="text" id="inventoryLocation" placeholder="例: 冷蔵庫">
+            </label>
+      
+            <label>
+              最低在庫
+              <input type="number" id="inventoryMinStock" min="0" step="1" value="0">
+            </label>
+          </div>
+      
+          <label class="inventory-memo-label">
+            メモ
+            <textarea id="inventoryMemo" rows="2" placeholder="自由メモ"></textarea>
+          </label>
+      
+          <div class="inventory-form-actions">
+            <button type="submit" class="inventory-primary-btn">在庫を追加</button>
+            <button type="button" id="inventoryFormResetBtn" class="inventory-secondary-btn">入力クリア</button>
+          </div>
+        </form>
+      
+        <div id="inventoryMessage" class="inventory-message"></div>
+        <div id="inventorySummary" class="inventory-summary">在庫件数: 0件</div>
+      
+        <div id="inventoryList" class="inventory-list"></div>
+      </section>
 </body>
 </html>

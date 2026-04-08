@@ -409,3 +409,272 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFavorites();
     renderHistory();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  initInventoryMiniUI();
+});
+
+function initInventoryMiniUI() {
+  if (typeof ensureInventoryStorageInitialized !== "function") {
+    console.error("inventoryStorage.js が読み込まれていません。");
+    return;
+  }
+
+  ensureInventoryStorageInitialized();
+
+  const form = document.getElementById("inventoryForm");
+  const refreshBtn = document.getElementById("inventoryRefreshBtn");
+  const resetBtn = document.getElementById("inventoryFormResetBtn");
+  const lowStockOnly = document.getElementById("inventoryLowStockOnly");
+  const list = document.getElementById("inventoryList");
+
+  if (!form || !refreshBtn || !resetBtn || !lowStockOnly || !list) {
+    return;
+  }
+
+  form.addEventListener("submit", handleInventoryFormSubmit);
+  refreshBtn.addEventListener("click", renderInventoryList);
+  resetBtn.addEventListener("click", resetInventoryForm);
+  lowStockOnly.addEventListener("change", renderInventoryList);
+
+  list.addEventListener("click", (event) => {
+    const actionBtn = event.target.closest("[data-action]");
+    if (!actionBtn) return;
+
+    const itemId = actionBtn.dataset.id;
+    const action = actionBtn.dataset.action;
+    if (!itemId || !action) return;
+
+    const targetItem = getInventoryItemById(itemId);
+    if (!targetItem) {
+      showInventoryMessage("対象の在庫が見つかりませんでした。", "error");
+      renderInventoryList();
+      return;
+    }
+
+    if (action === "delete") {
+      const ok = window.confirm(`「${targetItem.name}」を削除しますか？`);
+      if (!ok) return;
+
+      deleteInventoryItem(itemId);
+      showInventoryMessage(`「${targetItem.name}」を削除しました。`, "success");
+      renderInventoryList();
+      return;
+    }
+
+    if (action === "plus") {
+      updateInventoryItem(itemId, {
+        quantity: Number(targetItem.quantity) + 1
+      });
+      showInventoryMessage(`「${targetItem.name}」の数量を +1 しました。`, "success");
+      renderInventoryList();
+      return;
+    }
+
+    if (action === "minus") {
+      const nextQuantity = Math.max(0, Number(targetItem.quantity) - 1);
+      updateInventoryItem(itemId, { quantity: nextQuantity });
+      showInventoryMessage(`「${targetItem.name}」の数量を -1 しました。`, "success");
+      renderInventoryList();
+      return;
+    }
+
+    if (action === "edit") {
+      openInventoryEditPrompt(itemId);
+    }
+  });
+
+  renderInventoryList();
+}
+
+function handleInventoryFormSubmit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("inventoryName").value.trim();
+  const quantity = Number(document.getElementById("inventoryQuantity").value);
+  const unit = document.getElementById("inventoryUnit").value.trim() || "個";
+  const category = document.getElementById("inventoryCategory").value.trim();
+  const location = document.getElementById("inventoryLocation").value.trim();
+  const minStock = Number(document.getElementById("inventoryMinStock").value);
+  const memo = document.getElementById("inventoryMemo").value.trim();
+
+  if (!name) {
+    showInventoryMessage("品名を入力してください。", "error");
+    return;
+  }
+
+  addInventoryItem({
+    name,
+    quantity: Number.isFinite(quantity) ? quantity : 0,
+    unit,
+    category,
+    location,
+    minStock: Number.isFinite(minStock) ? minStock : 0,
+    memo
+  });
+
+  showInventoryMessage(`「${name}」を追加しました。`, "success");
+  resetInventoryForm();
+  renderInventoryList();
+}
+
+function resetInventoryForm() {
+  document.getElementById("inventoryForm").reset();
+  document.getElementById("inventoryQuantity").value = 1;
+  document.getElementById("inventoryUnit").value = "個";
+  document.getElementById("inventoryMinStock").value = 0;
+}
+
+function renderInventoryList() {
+  const list = document.getElementById("inventoryList");
+  const summary = document.getElementById("inventorySummary");
+  const lowStockOnly = document.getElementById("inventoryLowStockOnly");
+
+  if (!list || !summary || !lowStockOnly) return;
+
+  let items = getInventoryItems();
+
+  items.sort((a, b) => {
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+  });
+
+  if (lowStockOnly.checked) {
+    items = items.filter((item) => item.quantity <= item.minStock);
+  }
+
+  summary.textContent = `在庫件数: ${items.length}件`;
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="inventory-empty">表示する在庫がありません。</div>`;
+    return;
+  }
+
+  list.innerHTML = items
+    .map((item) => {
+      const isLowStock = item.quantity <= item.minStock;
+
+      return `
+      <div class="inventory-card">
+        <div class="inventory-card-header">
+          <div>
+            <h3 class="inventory-card-title">
+              ${escapeHtml(item.name)}
+              ${isLowStock ? `<span class="inventory-low-badge">低在庫</span>` : ""}
+            </h3>
+          </div>
+
+          <div class="inventory-card-actions">
+            <button type="button" class="inventory-secondary-btn inventory-mini-btn" data-action="minus" data-id="${escapeHtml(item.id)}">-1</button>
+            <button type="button" class="inventory-secondary-btn inventory-mini-btn" data-action="plus" data-id="${escapeHtml(item.id)}">+1</button>
+            <button type="button" class="inventory-secondary-btn" data-action="edit" data-id="${escapeHtml(item.id)}">編集</button>
+            <button type="button" class="inventory-delete-btn" data-action="delete" data-id="${escapeHtml(item.id)}">削除</button>
+          </div>
+        </div>
+
+        <div class="inventory-card-meta">
+          <div>数量: ${escapeHtml(String(item.quantity))} ${escapeHtml(item.unit || "")}</div>
+          <div>カテゴリ: ${escapeHtml(item.category || "-")}</div>
+          <div>場所: ${escapeHtml(item.location || "-")}</div>
+          <div>最低在庫: ${escapeHtml(String(item.minStock))}</div>
+          <div>メモ: ${escapeHtml(item.memo || "-")}</div>
+          <div>更新: ${formatDateTime(item.updatedAt)}</div>
+        </div>
+      </div>
+    `;
+    })
+    .join("");
+}
+
+function showInventoryMessage(message, type) {
+  const messageEl = document.getElementById("inventoryMessage");
+  if (!messageEl) return;
+
+  messageEl.textContent = message;
+  messageEl.className = "inventory-message";
+
+  if (type === "success") {
+    messageEl.classList.add("is-success");
+  }
+
+  if (type === "error") {
+    messageEl.classList.add("is-error");
+  }
+}
+
+function formatDateTime(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleString("ja-JP");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function openInventoryEditPrompt(itemId) {
+  const item = getInventoryItemById(itemId);
+  if (!item) {
+    showInventoryMessage("編集対象の在庫が見つかりませんでした。", "error");
+    return;
+  }
+
+  const name = window.prompt("品名を入力してください", item.name);
+  if (name === null) return;
+
+  const quantityInput = window.prompt("数量を入力してください", String(item.quantity));
+  if (quantityInput === null) return;
+
+  const unit = window.prompt("単位を入力してください", item.unit || "個");
+  if (unit === null) return;
+
+  const category = window.prompt("カテゴリを入力してください", item.category || "");
+  if (category === null) return;
+
+  const location = window.prompt("保管場所を入力してください", item.location || "");
+  if (location === null) return;
+
+  const minStockInput = window.prompt("最低在庫を入力してください", String(item.minStock));
+  if (minStockInput === null) return;
+
+  const memo = window.prompt("メモを入力してください", item.memo || "");
+  if (memo === null) return;
+
+  const quantity = Number(quantityInput);
+  const minStock = Number(minStockInput);
+
+  if (!name.trim()) {
+    showInventoryMessage("品名は空にできません。", "error");
+    return;
+  }
+
+  if (!Number.isFinite(quantity) || quantity < 0) {
+    showInventoryMessage("数量は 0 以上の数字で入力してください。", "error");
+    return;
+  }
+
+  if (!Number.isFinite(minStock) || minStock < 0) {
+    showInventoryMessage("最低在庫は 0 以上の数字で入力してください。", "error");
+    return;
+  }
+
+  updateInventoryItem(itemId, {
+    name: name.trim(),
+    quantity,
+    unit: unit.trim() || "個",
+    category: category.trim(),
+    location: location.trim(),
+    minStock,
+    memo: memo.trim()
+  });
+
+  showInventoryMessage(`「${name.trim()}」を更新しました。`, "success");
+  renderInventoryList();
+}
