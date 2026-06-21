@@ -478,6 +478,77 @@ main {
 .category-item-icon { font-size: 24px; }
 .category-item-name { font-size: 20px; font-weight: bold; color: #333; }
 
+/* ---- ジャンルセレクト ---- */
+.genre-select {
+    padding: 15px 20px;
+    font-size: 20px;
+    border: 3px solid #9c27b0;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    min-width: 130px;
+}
+
+/* ---- ジャンルグループ表示 ---- */
+.genre-group {
+    margin-bottom: 18px;
+}
+
+.genre-header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #5c35a0;
+    background: #f3e5f5;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 5px solid #9c27b0;
+}
+
+.genre-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ---- ジャンル紐づけ一覧 ---- */
+.genre-mapping-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.mapping-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border-left: 5px solid #9c27b0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mapping-text {
+    font-size: 18px;
+    color: #333;
+}
+
+.btn-delete-mapping {
+    padding: 6px 14px;
+    font-size: 16px;
+    background: #ffcdd2;
+    color: #c62828;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.btn-delete-mapping:hover { background: #ef9a9a; }
+
 /* ---- フッター ---- */
 footer {
     text-align: center;

@@ -10,7 +10,9 @@ const STORAGE_KEYS = {
     SHOPPING_ITEMS: 'shoppingItems',
     CATEGORIES: 'categories',
     FAVORITES: 'favorites',
-    HISTORY: 'history'
+    HISTORY: 'history',
+    GENRES: 'genres',
+    GENRE_MAPPING: 'genreMapping'
 };
 
 // ---------- 安全にJSONを読む ----------
@@ -75,6 +77,25 @@ function saveHistory(history) {
     return safeWriteJson(STORAGE_KEYS.HISTORY, history);
 }
 
+// ---------- ジャンル ----------
+function loadGenres(defaultGenres) {
+    const stored = safeReadJson(STORAGE_KEYS.GENRES, null);
+    return stored || [...defaultGenres];
+}
+
+function saveGenres(genres) {
+    return safeWriteJson(STORAGE_KEYS.GENRES, genres);
+}
+
+// ---------- ジャンルマッピング（商品名 → ジャンル名）----------
+function loadGenreMapping() {
+    return safeReadJson(STORAGE_KEYS.GENRE_MAPPING, {});
+}
+
+function saveGenreMapping(mapping) {
+    return safeWriteJson(STORAGE_KEYS.GENRE_MAPPING, mapping);
+}
+
 // ---------- 既存コード互換 ----------
 // 今の script.js の save(key, data) をすぐ全部直さなくても動くように残す
 function save(key, data) {
@@ -82,11 +103,13 @@ function save(key, data) {
 }
 
 // 今の script.js の loadData() を置き換える用
-function loadData(defaultCategories) {
+function loadData(defaultCategories, defaultGenres) {
     return {
         shoppingItems: loadShoppingItems(),
         categories: loadCategories(defaultCategories),
         favorites: loadFavorites(),
-        history: loadHistory()
+        history: loadHistory(),
+        genres: loadGenres(defaultGenres || []),
+        genreMapping: loadGenreMapping()
     };
 }

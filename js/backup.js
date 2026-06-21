@@ -16,7 +16,9 @@ const BACKUP_TARGET_KEYS = [
     'shoppingItems',
     'categories',
     'favorites',
-    'history'
+    'history',
+    'genres',
+    'genreMapping'
 ];
 
 // ---------- 日時文字列 ----------
