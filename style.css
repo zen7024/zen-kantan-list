@@ -325,6 +325,18 @@ main {
     gap: 8px;
 }
 
+.btn-edit-item {
+    padding: 8px 12px;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: .3s;
+}
+
+.btn-edit-item:hover { background: #e3f2fd; transform: scale(1.1); }
+
 .btn-favorite, .btn-delete-item, .btn-delete-category {
     padding: 8px 12px;
     font-size: 20px;
@@ -548,6 +560,100 @@ main {
 }
 
 .btn-delete-mapping:hover { background: #ef9a9a; }
+
+/* ---- 編集モーダル ---- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.is-open { display: flex; }
+
+.modal-box {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.3);
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.modal-field { margin-bottom: 16px; }
+
+.modal-label {
+    display: block;
+    font-size: 16px;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.modal-input,
+.modal-select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 20px;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    outline: none;
+    background: white;
+    box-sizing: border-box;
+}
+
+.modal-input:focus,
+.modal-select:focus {
+    border-color: #45a049;
+    box-shadow: 0 0 6px rgba(76,175,80,.3);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-btn-cancel {
+    flex: 1;
+    padding: 14px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #f5f5f5;
+    color: #666;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.modal-btn-cancel:hover { background: #e0e0e0; }
+
+.modal-btn-save {
+    flex: 1;
+    padding: 14px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.modal-btn-save:hover { background: #45a049; }
 
 /* ---- フッター ---- */
 footer {

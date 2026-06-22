@@ -155,6 +155,7 @@ function renderShoppingList() {
                 ${dateBadge}
             </div>
             <div class="item-actions">
+                <button class="btn-edit-item" data-id="${item.id}" title="編集">✏️</button>
                 <button class="btn-favorite" data-id="${item.id}" title="お気に入りに追加">⭐</button>
                 <button class="btn-delete-item" data-id="${item.id}" title="削除">🗑️</button>
             </div>
@@ -202,6 +203,13 @@ function renderShoppingList() {
             save('shoppingItems', shoppingItems);
             renderShoppingList();
             renderTodayBanner();
+        });
+    });
+
+    // 編集
+    listEl.querySelectorAll('.btn-edit-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openEditModal(parseInt(btn.dataset.id));
         });
     });
 
@@ -260,6 +268,53 @@ function addItem() {
 
     renderShoppingList();
     renderTodayBanner();
+}
+
+// ---------- 編集モーダル ----------
+function openEditModal(id) {
+    const item = shoppingItems.find(i => i.id === id);
+    if (!item) return;
+
+    document.getElementById('editItemText').value = item.text;
+
+    const catSel = document.getElementById('editItemCategory');
+    catSel.innerHTML = categories.map(c =>
+        `<option value="${c.name}" ${c.name === item.category ? 'selected' : ''}>${c.icon} ${c.name}</option>`
+    ).join('');
+
+    const genreSel = document.getElementById('editItemGenre');
+    genreSel.innerHTML = `<option value="">未分類</option>` +
+        genres.map(g =>
+            `<option value="${g.name}" ${g.name === item.genre ? 'selected' : ''}>${g.icon} ${g.name}</option>`
+        ).join('');
+
+    document.getElementById('editItemDate').value = item.scheduledDate || '';
+
+    const modal = document.getElementById('editModal');
+    modal.classList.add('is-open');
+
+    document.getElementById('editSaveBtn').onclick = () => {
+        const newText = document.getElementById('editItemText').value.trim();
+        if (!newText) return;
+        backupBeforeWrite();
+        item.text = newText;
+        item.category = document.getElementById('editItemCategory').value;
+        item.genre = document.getElementById('editItemGenre').value || null;
+        item.scheduledDate = document.getElementById('editItemDate').value || null;
+        save('shoppingItems', shoppingItems);
+        modal.classList.remove('is-open');
+        renderShoppingList();
+        renderTodayBanner();
+        showToast('✅ 更新しました');
+    };
+
+    document.getElementById('editCancelBtn').onclick = () => {
+        modal.classList.remove('is-open');
+    };
+
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.remove('is-open');
+    };
 }
 
 // ---------- ジャンル自動選択 ----------

@@ -168,6 +168,33 @@
     <footer>
         <p>お母さんのための買い物リスト ❤️</p>
     </footer>
+    <!-- 編集モーダル -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">✏️ 編集</h3>
+            <div class="modal-field">
+                <label class="modal-label">品名</label>
+                <input type="text" id="editItemText" class="modal-input">
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">お店</label>
+                <select id="editItemCategory" class="modal-select"></select>
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">ジャンル</label>
+                <select id="editItemGenre" class="modal-select"></select>
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">購入予定日</label>
+                <input type="date" id="editItemDate" class="modal-input">
+            </div>
+            <div class="modal-actions">
+                <button id="editCancelBtn" class="modal-btn-cancel">キャンセル</button>
+                <button id="editSaveBtn" class="modal-btn-save">保存</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/storage.js"></script>
     <script src="js/backup.js"></script>
     <script src="js/inventoryStorage.js"></script>
